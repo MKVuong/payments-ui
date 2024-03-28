@@ -8,13 +8,13 @@ const Transactions = () => {
   const countries : string[] = allPayments.map(payment => payment.country)
   const uniqueCountries : string[] = Array.from(new Set(countries))
 
-  const [myValue, setMyValue] = useState(uniqueCountries[0]);
+  const [selectedCountry, setSelectedCountry] = useState(uniqueCountries[0]);
 
   return (
     <div>
-      <select
-        onChange={(e) => setMyValue(e.target.value)}
-        defaultValue={myValue}
+      <select 
+        onChange={(e) => setSelectedCountry(e.target.value)}
+        defaultValue={selectedCountry}
       >
         {uniqueCountries.map((option, idx) => (
           <option key={idx}>{option}</option>
@@ -33,7 +33,7 @@ const Transactions = () => {
         </thead>
         <tbody>
           {allPayments
-            .filter((payment) => payment.country === myValue)
+            .filter((payment) => payment.country === selectedCountry)
             .map((payment) => {
               return (
                 <tr>
