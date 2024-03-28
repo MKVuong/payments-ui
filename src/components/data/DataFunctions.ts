@@ -1,5 +1,8 @@
+import axios, { AxiosResponse } from "axios";
+
+
 export type PaymentType =
-    {id: number,
+    {id: number | null,
     amount: number,
         country: string,
         currency: string,
@@ -8,6 +11,65 @@ export type PaymentType =
         taxCode: number,
         taxRate: number,
         type: string}
+
+let serverUrl: string = "https://payments.multicode.uk"
+if (process.env.PRODUCTION_URL) {
+    serverUrl = process.env.PRODUCTION_URL
+}
+
+export const getPaymentsFromServer = () : void => {
+    console.log("getting payments from server");
+
+    const result : Promise<AxiosResponse<PaymentType[]>> = 
+    axios<PaymentType[]>(
+        {
+        method: "GET", 
+        url: `${serverUrl}/api/payment`,
+        headers: {'Accept': 'application/json'}
+
+        
+    })
+    console.log(result)
+
+    result.then( (response) => {
+        const data : PaymentType[] = response.data
+        console.log(data.length)
+        console.log(response)
+    })
+}
+
+export const getPaymentsForCountry = (country: string) => {
+    const result : Promise<AxiosResponse<PaymentType[]>> = 
+    axios<PaymentType[]>(
+        {
+        method: "GET", 
+        url: `${serverUrl}/api/payment?country=${country}`,
+        headers: {'Accept': 'application/json'}
+
+        
+    })
+    console.log(result)
+    return result 
+}
+
+export const getCountries = () : Promise<AxiosResponse<string[]>> => {
+    return axios<string[]>(
+        {
+        method: "GET", 
+        url: `${serverUrl}/api/country`,
+        headers: {'Accept': 'application/json'}
+    })
+}
+
+export const addNewTransaction = (trans : PaymentType) : Promise<AxiosResponse<PaymentType>> => {
+    return axios<PaymentType>(
+        {
+            method: "POST",
+            url: `${serverUrl}/api/payment`,
+            headers: {'Accept': 'application/json', 'Content-Type' : 'application/json'},
+            data: trans
+        })
+}
 
 export const getAllPayments : () => PaymentType[] 
     = () => { return [
